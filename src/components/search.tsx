@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Search} from './icons'
+import { Search} from '../assets/icons'
 import { supabase } from './supabase'
-import { Plus, Deny } from './icons'
+import { Plus, Deny } from '../assets/icons'
 import { useUser } from './userCtx'
 
 type Props = {
@@ -18,7 +18,7 @@ export default function SearchBar({friends}: Props){
         e.preventDefault()
         setMsg('')
         if(kw.trim().length<1) return
-        supabase.from('profiles').select().eq('email',kw).neq('email', user.email)
+        supabase.from('profiles').select().eq('email',kw).neq('email', user.email.trim())
             .then((res:any)=>{
                 if(res.error || res.data.length<1){
                     setMsg("未搜索到该用户！")
@@ -33,10 +33,11 @@ export default function SearchBar({friends}: Props){
             .then((res:any)=>{
                 // console.log(res)
                 if(res.error){
-                    alert("发送邀请失败！")
+                    setMsg("发送邀请失败！")
                     return
                 }
-                alert("发送邀请成功！")
+                setMsg("发送邀请成功！")
+                setRts([])
             })
     }
 
@@ -45,10 +46,10 @@ export default function SearchBar({friends}: Props){
             .then((res:any)=>{
                 // console.log(res)
                 if(res.error){
-                    alert("添加好友失败！")
+                    setMsg("添加好友失败！")
                     return
                 }
-                alert("添加好友成功！")
+                // setMsg("添加好友成功！")
             })
     }
 
@@ -57,10 +58,10 @@ export default function SearchBar({friends}: Props){
             .then((res:any)=>{
                 // console.log(res)
                 if(res.error){
-                    alert("操作失败！")
+                    setMsg("操作失败！")
                     return
                 }
-                alert("已拒绝该要求！")
+                setMsg("已拒绝该要求！")
             })
     }
     return (<>

@@ -19,8 +19,6 @@ export default async function getFriend(id:string){
         }else{
             if(u.stats){
                 rts.push({fid:u.id,email:u.p.email, id:u.p.id, group:u.user_g, nickname:u.p.nickname,avatar:u.p.avatar})
-            }else{
-                nfrd.push({fid:u.id,email:u.p.email, id:u.p.id, group:u.user_g, nickname:u.p.nickname,avatar:u.p.avatar})
             }
         }
     }

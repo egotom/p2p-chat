@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import{Setting, DoubleUp, DoubleDown} from './icons'
+import{Setting, DoubleUp, DoubleDown} from '../assets/icons'
 
 type Props = {
     user:any
@@ -13,7 +13,7 @@ export default function Preferences  ({user}: Props) {
     useEffect(()=>{
         if(user?.id){
             // console.log(user,'---------------------------------')
-            setAcc({nickname:user.user_metadata.nickname, password:'********'})
+            setAcc({email:user.email,nickname:user.user_metadata.nickname, password:'********'})
         }
     },[user])
 
@@ -29,11 +29,12 @@ export default function Preferences  ({user}: Props) {
         {coll || <form className='py-3'>
             <fieldset className='border border-gray-400 p-2 flex flex-col gap-2'>
                 <legend className='bg-gray-300 z-10'>账号</legend>
-                <div>账号： {user.email}</div>
+                <div>账号： {acc.email}</div>
                 <div className='flex'>昵称：  
                     <input type="text" className={chg?'bg-transparent w-36 border border-gray-400':'bg-transparent w-36'} value={acc.nickname} 
                         disabled={!chg} onChange={(e:any)=>setAcc({...acc, [e.target.name]:e.target.value})} name="nickname"/> 
                 </div>
+                <div className='flex'>头像： <input type="checkbox" /></div>
                 <div className='flex'>密码：  
                     <input type="password" className={chg?'bg-transparent w-36 border border-gray-400':'bg-transparent w-36'} value={acc.password} 
                         disabled={!chg} onChange={(e:any)=>setAcc({...acc, [e.target.name]:e.target.value})} name="password"/> 

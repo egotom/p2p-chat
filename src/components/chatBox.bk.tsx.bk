@@ -33,10 +33,6 @@ export default function chatBox({}: Props) {
     })
 
   useEffect(()=>{
-    supabase
-      .from('contacts')
-      .upsert({ uid: user.id, stats: {} })
-      .select()
   },[])
 
   function acceptPeers(offer:any){
@@ -84,16 +80,7 @@ export default function chatBox({}: Props) {
     inRef.current.focus()
   }
   
-  function handletextChannelStatusChange() {
-    if (textChannel) {
-      const state = textChannel.readyState;
-      if (state === "open") {
-        setStatus({...status, conn:true})
-      } else {
-        setStatus({...status, conn:false})
-      }
-    }
-  }
+
 
   function disconnectPeers() {
     textChannel.close();
