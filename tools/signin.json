@@ -1,0 +1,80 @@
+{
+  "data": {
+    "user": {
+      "id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "1257817341@qq.com",
+      "email_confirmed_at": "2023-07-09T05:44:05.462673Z",
+      "phone": "",
+      "confirmation_sent_at": "2023-07-09T05:39:59.599111Z",
+      "confirmed_at": "2023-07-09T05:44:05.462673Z",
+      "last_sign_in_at": "2023-07-09T12:32:31.168082298Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {},
+      "identities": [
+        {
+          "id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+          "user_id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+          "identity_data": {
+            "email": "1257817341@qq.com",
+            "sub": "c27518f0-a9ea-40a0-930d-16f3d1082ac9"
+          },
+          "provider": "email",
+          "last_sign_in_at": "2023-07-09T05:39:59.597988Z",
+          "created_at": "2023-07-09T05:39:59.598026Z",
+          "updated_at": "2023-07-09T05:39:59.598026Z"
+        }
+      ],
+      "created_at": "2023-07-09T05:39:59.595881Z",
+      "updated_at": "2023-07-09T12:32:31.169608Z"
+    },
+    "session": {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjg4OTA5NTUxLCJzdWIiOiJjMjc1MThmMC1hOWVhLTQwYTAtOTMwZC0xNmYzZDEwODJhYzkiLCJlbWFpbCI6IjEyNTc4MTczNDFAcXEuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6e30sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE2ODg5MDU5NTF9XSwic2Vzc2lvbl9pZCI6ImZjNThlNGRmLTI5OTYtNDVhZC1hZGY1LWY4Njg0M2VjZDI1ZSJ9.Qvz8dwKby1iyO21qRgrji22PsvcUoNS2zk0DSJrMcYk",
+      "token_type": "bearer",
+      "expires_in": 3600,
+      "refresh_token": "elUWiYxNZR0XRHjyvEiAjw",
+      "user": {
+        "id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+        "aud": "authenticated",
+        "role": "authenticated",
+        "email": "1257817341@qq.com",
+        "email_confirmed_at": "2023-07-09T05:44:05.462673Z",
+        "phone": "",
+        "confirmation_sent_at": "2023-07-09T05:39:59.599111Z",
+        "confirmed_at": "2023-07-09T05:44:05.462673Z",
+        "last_sign_in_at": "2023-07-09T12:32:31.168082298Z",
+        "app_metadata": {
+          "provider": "email",
+          "providers": [
+            "email"
+          ]
+        },
+        "user_metadata": {},
+        "identities": [
+          {
+            "id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+            "user_id": "c27518f0-a9ea-40a0-930d-16f3d1082ac9",
+            "identity_data": {
+              "email": "1257817341@qq.com",
+              "sub": "c27518f0-a9ea-40a0-930d-16f3d1082ac9"
+            },
+            "provider": "email",
+            "last_sign_in_at": "2023-07-09T05:39:59.597988Z",
+            "created_at": "2023-07-09T05:39:59.598026Z",
+            "updated_at": "2023-07-09T05:39:59.598026Z"
+          }
+        ],
+        "created_at": "2023-07-09T05:39:59.595881Z",
+        "updated_at": "2023-07-09T12:32:31.169608Z"
+      },
+      "expires_at": 1688909551
+    }
+  },
+  "error": null
+}

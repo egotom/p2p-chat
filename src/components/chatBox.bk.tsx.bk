@@ -1,0 +1,151 @@
+import { useState,useEffect,useRef } from "react";
+import { Attachment,Send, Video, DVideo, Sound, DSound, Face, Ellipsis} from './icons';
+import  Emoji  from './emoji'
+import supabase from './supabase'
+type Props = {}
+const socket:any=new WebSocket("ws://localhost:8080")
+const pc :any = new RTCPeerConnection()
+const uid:any = Math.random().toString(36).slice(-10)
+let textChannel:any=null
+
+export default function chatBox({}: Props) {
+  const inRef = useRef<any>(null)
+  const [status, setStatus] = useState<any>({conn:false, video:false, audio:false, ready:false})
+  const [message, setMessage] = useState<string>("")
+  const [msg, setMsg] = useState<any>([])
+  const [emj, setEmj] = useState<boolean>(false)
+  socket.addEventListener("open", () => setStatus({...status, ready:true}))
+    socket.addEventListener("message", (event:any) => {
+        const data = JSON.parse(event.data)
+        if(data.type==="desc-answer" && data.id !==uid){
+          pc.setRemoteDescription(data.data).catch((e:any)=>
+            console.log("answer:",e)
+          )
+        }
+        if(data.type==="desc-offer" && data.id !==uid){
+          acceptPeers(data.data)
+        }
+        if(data.type==="candidate" && data.id !==uid && data.data){
+          pc.addIceCandidate(data.data).catch((e:any)=>
+            console.log("AddICECandidate failed!",e)
+          );
+        }
+    })
+
+  useEffect(()=>{
+    supabase
+      .from('contacts')
+      .upsert({ uid: user.id, stats: {} })
+      .select()
+  },[])
+
+  function acceptPeers(offer:any){
+    pc.ondatachannel = (event:any)=> {
+      textChannel = event.channel
+      textChannel.onmessage = (e:any)=>setMsg((old:any)=>[...old, JSON.parse(e.data)])
+      textChannel.onopen = handletextChannelStatusChange
+      textChannel.onclose = handletextChannelStatusChange
+    };
+    pc.onicecandidate = (e:any) =>{
+      socket.send(JSON.stringify({id:uid, type:"candidate",data:e.candidate})); 
+    }
+    
+    pc.setRemoteDescription(offer);
+    pc.createAnswer().then((answer:any) => {
+      pc.setLocalDescription(answer); 
+      socket.send(JSON.stringify({id:uid, type:"desc-answer",data:answer})); 
+    }).catch((error:any)=> {
+      console.log("Unable to create an offer: " + error.toString());
+    });
+  }
+
+  function connectPeers() {
+    textChannel = pc.createDataChannel("textChannel")
+    textChannel.onopen = handletextChannelStatusChange
+    textChannel.onclose = handletextChannelStatusChange
+    textChannel.onmessage =(e:any)=>setMsg((old:any)=>[...old, JSON.parse(e.data)])
+    pc.onicecandidate = (e:any) =>{
+      socket.send(JSON.stringify({id:uid, type:"candidate",data:e.candidate})); 
+    }
+    pc.createOffer().then((offer:any) => {
+      pc.setLocalDescription(offer); 
+      socket.send(JSON.stringify({id:uid, type:"desc-offer",data:offer})); 
+    }).catch((error:any)=> {
+      console.log("Unable to create an offer: " + error.toString());
+    });
+  }
+
+  function sendMessage() {
+    if(message === "") return
+    const text = {id: Date.now(), msg:message, author:uid}
+    setMsg([...msg, text])
+    textChannel.send(JSON.stringify(text))
+    setMessage("")
+    inRef.current.focus()
+  }
+  
+  function handletextChannelStatusChange() {
+    if (textChannel) {
+      const state = textChannel.readyState;
+      if (state === "open") {
+        setStatus({...status, conn:true})
+      } else {
+        setStatus({...status, conn:false})
+      }
+    }
+  }
+
+  function disconnectPeers() {
+    textChannel.close();
+    // textChannel = null;
+    // pc.close();
+    setStatus({...status, conn:false})
+  }
+
+  return (
+  <div className="flex flex-col justify-between px-3 h-screen w-full">
+    <div className="flex justify-end items-end cursor-pointer border-b border-gray-400 w-full px-3 py-1.5">
+      <div className="mr-1">华盛顿</div>      
+      <Ellipsis css="w-5 h-5"/>
+    </div>
+    <div className="w-full h-full rounded flex flex-col gap-3 p-3 grow overflow-y-auto">
+      {msg.map((it:any)=>
+      <div className={it.author===uid?"msg-me":"msg" } key={it.id}>
+        {it.msg}
+      </div>
+      )}
+    </div>
+    <div className="flex flex-col">
+      <div className="w-full px-3">        
+        <textarea className="w-full border border-blue-600 grow rounded px-2 " 
+          ref={inRef} 
+          value={message} 
+          onChange={(e:any)=>setMessage(e.target.value)}>
+        </textarea>
+      </div>
+      <div className="flex justify-between gap-3 w-full p-3 relative">
+        <div className="flex gap-3">
+          {status.audio?
+            <button className={status.conn?"btn":"btn-disabled"}><DSound css={"w-5 h-5 text-white"}/></button>:
+            <button className={status.conn?"btn":"btn-disabled"}><Sound css={"w-5 h-5 text-white"}/></button>
+          }
+          {status.video?
+            <button className={status.conn?"btn":"btn-disabled"}><DVideo css={"w-5 h-5 text-white"}/></button>:
+            <button className={status.conn?"btn":"btn-disabled"}><Video css={"w-5 h-5 text-white"}/></button>
+          }
+          <button className={status.conn?"btn":"btn-disabled"}><Attachment css={"w-5 h-5 text-white"}/></button>
+        </div>
+        
+        <div className="flex gap-3">
+          <button className="btn" onClick={()=>setEmj(!emj)}>
+            <Face css={"w-5 h-5 text-white"} />
+          </button>
+          <button className={status.conn?"btn":"btn-disabled"} onClick={sendMessage}>
+            <Send css={"w-5 h-5 text-white -rotate-45"}/>
+          </button>          
+          {emj && <Emoji />}
+        </div>
+      </div>
+    </div>
+  </div>
+)}

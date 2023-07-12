@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    @apply bg-gray-300;
+}
+
+.btn{
+    @apply border border-blue-600 px-4 py-1.5 rounded bg-blue-600 text-white;
+}
+
+.btn-disabled{
+    @apply border border-gray-400 px-4 py-1.5 rounded bg-gray-400 text-white;
+}
+
+.msg{
+    @apply mr-10 self-start px-2 py-1 bg-white rounded;
+}
+
+.msg-me{
+    @apply self-end px-2 py-1 bg-green-500 rounded ml-10;
+}
+
+.tab{
+    @apply border border-gray-400 px-1 cursor-pointer;
+}
+
+.tab-a{
+    @apply border border-b-0 border-gray-400 px-1 cursor-pointer;
+}
+
+
+.dot2 {
+    display: inline-block;
+    width: 3ch;
+    text-indent: -1ch;
+    vertical-align: bottom;
+    overflow: hidden;
+    animation: dot2 2s infinite step-start both;
+    font-family: monospace;
+}
+@keyframes dot2 {
+    33% {text-indent: 0;}
+    66% {text-indent: -2ch;}
+}
