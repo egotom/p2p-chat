@@ -121,14 +121,20 @@ export default function chatBox({topic,groups}: Props) {
           }
           <button className={status.conn?"btn":"btn-disabled"}><Attachment css={"w-5 h-5 text-white"}/></button>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 ">
           <button className="btn" onClick={()=>setEmj(!emj)}>
             <Face css={"w-5 h-5 text-white"} />
           </button>
           <button type="submit" className={status.conn?"btn":"btn-disabled"}>
             <Send css={"w-5 h-5 text-white -rotate-45"}/>
-          </button>          
-          {emj && <Emojis />}
+          </button>    
+              
+          {emj && 
+            <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-96 h-96 p-3 ">
+              <Emojis />
+            </div>  
+          }
+          
           {/* <Emoji name="270b" css="" /> */}
         </div>
       </div>
