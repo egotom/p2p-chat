@@ -5,6 +5,7 @@ const key = process.env.NEXT_PUBLIC_SUPABASE_KEY as string
 const supabase = createClient(url, key)
 
 async function getFriend(id:string){
+    
     const rts:any =[], nfrd:any=[]
     const {data,error}:any = await supabase.from('friends')
         .select(`id,p:profiles!friends_user_fkey(id,email,nickname,avatar,sdp,ice), p2:profiles!friends_user2_fkey(id,email,nickname,avatar,sdp,ice) , user_g, user2_g, stats`)
@@ -22,7 +23,9 @@ async function getFriend(id:string){
             }
         }else{
             if(u.stats){
-                rts.push({fid:u.id,email:u.p.email, id:u.p.id, group:u.user_g, nickname:u.p.nickname,avatar:u.p.avatar})
+                rts.push({fid:u.id, email:u.p.email, id:u.p.id, group:u.user_g, nickname:u.p.nickname,avatar:u.p.avatar})
+            }else{
+                nfrd.push({fid:u.id, email:u.p.email, id:u.p.id, group:u.user2_g, nickname:u.p.nickname,avatar:u.p.avatar})
             }
         }
     }
@@ -49,27 +52,27 @@ async function getTopic(id:string){
 
 function subscribeFriend(id:string , callback:Function){
     const channel = supabase.channel('new-friend-channel')
-        .on('postgres_changes', { event: 'insert', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
-            (payload) => {
-                console.log('Change received!',JSON.stringify(payload.new))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
+            (payload:any) => {
+                console.log('friend update received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'update', schema: 'public', table: 'friends', filter: `user=eq.${id}` },
             (payload:any) => {
-                console.log('Change received!',JSON.stringify(payload.new))
+                console.log('update received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'delete', schema: 'public', table: 'friends', filter: `user=eq.${id}` },
             (payload:any) => {
-                console.log('Change received!',JSON.stringify(payload.new))
+                console.log('delete received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'update', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
             (payload:any) => {
-                console.log('Change received!',JSON.stringify(payload.new))
+                console.log('update received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         ).subscribe()
