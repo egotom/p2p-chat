@@ -1,6 +1,6 @@
 import { useState,useEffect,useRef } from "react";
 import { Attachment,Send, Video, DVideo, Sound, DSound, Face, Power} from '../assets/icons';
-import {Emojis}  from '../assets/emoji'
+import {Emojis,j}  from '../assets/emoji'
 import {supabase} from './supabase'
 import {useUser} from './userCtx'
 import TopicMen from "./topicMen"

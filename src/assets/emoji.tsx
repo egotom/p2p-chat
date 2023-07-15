@@ -18,14 +18,12 @@ return (
     </div>
 )}
 
-export function Emoji({name, css}: Props) {
+export function j({name}: Props) {
     const r:any = emjs.find((it:any)=>it.hasOwnProperty(name))
     return (
-    <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow flex flex-wrap gap-3 w-96 h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" className={css}>
-            {r[Object.keys(r)[0]]}
-        </svg>
-    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" className="w-7 h-7">
+        {r[Object.keys(r)[0]]}
+    </svg>
 )}
 
 
