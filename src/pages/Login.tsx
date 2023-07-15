@@ -85,7 +85,7 @@ export default function Login({}:Props){
         setLg({...lg, [e.target.name]:e.target.value})
     }
 return (
-<div className='h-full flex rounded'>
+<div className='h-full w-full flex justify-around items-center rounded'>
     <div className='basis-1/2 h-full flex flex-col bg-local rounded-l' style={{backgroundImage: "url(/bg-register.jpg)"}}>
         <div className="my-6 text-lg self-end px-3 text-white">登录</div>
         <div className="text-red-600 text-sm h-8 self-center w-64 mb-3">{nt.lres}</div>

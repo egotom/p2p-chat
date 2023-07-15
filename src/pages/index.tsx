@@ -16,12 +16,14 @@ export default function App() {
     const refWdith = useRef(null)
 
     useLayoutEffect(() => {
-        setColl(refWdith.current?.offsetWidth<660)
-        window.addEventListener('resize', ()=>{setColl(refWdith.current?.offsetWidth<660)})
+        const isColl = refWdith.current?.offsetWidth<660
+        setColl(isColl)
+        window.addEventListener('resize', ()=>{setColl(isColl)})
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
-            setUser(res.data.user)
+            setUser({...res.data.user, coll:isColl})
         })
+        setUser({...user, coll:isColl})
     }, [])
 
     useEffect(()=>{
