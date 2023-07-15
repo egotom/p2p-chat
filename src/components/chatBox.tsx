@@ -54,7 +54,7 @@ export default function chatBox({topic, groups, coll}: Props) {
   }
 
   function quitTopic(){
-    supabase.from('subscribe').delete().eq('follow', user.id)
+    supabase.from('subscribe').delete().match({follow:user.id, topic:topic.id})
     .then(({error}:any)=>{
       if(error){
         return false 
