@@ -9,7 +9,6 @@ import { useUser } from '../components/userCtx'
 
 export default function App() {
     const {user, setUser} = useUser()
-    const [me, setMe] = useState<any>(null)
     const [coll, setColl] = useState<boolean>(false)
     const [frd, setFrd] = useState<any>(null)
     const [groups, setGps] =useState<any>([])
@@ -22,7 +21,6 @@ export default function App() {
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
             setUser(res.data.user)
-            setMe(res.data.user)
         })
     }, [])
 
@@ -30,7 +28,7 @@ export default function App() {
         if(!user || !user.id) return
         subscribeFriend(user.id,(f:any)=>{
             setFrd(f)
-            setUser({...user, friends:f.friends}) 
+            setUser({...user, friends:f.friends, coll:coll}) 
         })
         subscribeTopic(user.id, setGps)
         // subscribeMsg(user.id, (payload) => {console.log(payload)})

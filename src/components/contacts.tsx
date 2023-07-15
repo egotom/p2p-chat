@@ -71,7 +71,7 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
             </button>
         </div>
     }
-    <div className={coll?"hidden":"flex flex-col justify-between h-screen w-80 p-3 border-r border-gray-400"}>
+    <div className={coll?"hidden":isColl?"coll-is":"coll"}>
         <div className="flex justify-between mb-6">
             <button className='self-end border-b border-gray-400' onClick={()=>setColl(true)}>
                 <DoubleLeft css="w-5 h-5 hover:text-blue-600" />

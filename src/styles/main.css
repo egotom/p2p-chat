@@ -13,7 +13,13 @@ body{
 .btn-disabled{
     @apply border border-gray-400 px-4 py-1 rounded bg-gray-400 text-white;
 }
+.coll{
+    @apply flex flex-col justify-between h-screen w-80 p-3 border-r border-gray-400;
+}
 
+.coll-is{
+    @apply fixed bg-gray-300 z-10 flex flex-col justify-between h-screen w-80 p-3 border-r border-gray-400;
+}
 .menu{
     @apply absolute top-[31px] flex flex-col w-40 bg-gray-300 border border-gray-400 border-t-0;
 }

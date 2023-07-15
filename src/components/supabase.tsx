@@ -47,8 +47,6 @@ async function getTopic(id:string){
     return rts
 }
 
-
-
 function subscribeFriend(id:string , callback:Function){
     const channel = supabase.channel('new-friend-channel')
         .on('postgres_changes', { event: 'insert', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
