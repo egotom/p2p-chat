@@ -7,19 +7,26 @@ import { supabase } from './supabase'
 type Props = {
     show:boolean,
     topic:any,
+    groups:any
     close:Function,
 }
 
-export default function topicMen({show, topic, close}: Props){
+export default function topicMen({show, topic:t, close, groups}: Props){
     const {user} = useUser()
     const [friends, setFrd] = useState<any>([])
-    const [sel, setSel] = useState<any>()
-    const [selr, setSelr] = useState<any>()
+    const [sel, setSel] = useState<any>({})
+    const [selr, setSelr] = useState<any>({})
+    const [topic, setTopic] = useState<any>([])
 
     useEffect(()=>{
         if(user && user.friends)
             setFrd(user.friends)
     },[user])
+
+    useEffect(()=>{
+        if(t && t.id && groups)
+            setTopic(groups.find(it=>it.id===t.id))
+    },[groups,t])
 
     function addMemeber(){
         if(!sel.id) return
@@ -27,19 +34,23 @@ export default function topicMen({show, topic, close}: Props){
         if(f) return 
         supabase.from("subscribe").insert({topic:topic.id, follow:sel.id})
         .then(({error})=>{
-            if(!error)
-                alert("添加成功！")
+            if(!error){
+                // alert("添加成功！")
+                setSel(null)
+            }
         })
     }
 
     function rmMemeber(){
         if(!selr.id) return
-        const f = topic.follow.find(it=>it.id===sel.id)
+        const f = topic.follow.find(it=>it.id===selr.id)
         if(!f) return 
-        supabase.from("subscribe").delete().match({follow:selr.id, topc:topic.id})
+        supabase.from("subscribe").delete().match({follow:selr.id, topic:topic.id})
         .then(({error})=>{
-            if(!error)
-                alert("添加成功！")
+            if(!error){
+                // alert("删除成功！")
+                setSelr(null)
+            }
         })
     }
 
@@ -70,14 +81,15 @@ export default function topicMen({show, topic, close}: Props){
                     <button className='btn my-2' onClick={addMemeber}>
                         <DoubRight css='w-5 h-5'/>
                     </button>
-                    {topic?.owner &&<button className='btn my-2'>
-                        <DoubleLeft css='w-5 h-5' onClick={rmMemeber}/>
+                    {topic?.owner &&
+                    <button className='btn my-2' onClick={rmMemeber}>
+                        <DoubleLeft css='w-5 h-5' />
                     </button>}
                 </div>
                 <fieldset className='basis-5/12 h-full border border-blue-400'>
                     <legend className='px-1.5 ml-4 text-blue-600'>群成员</legend>
                     <ul className='overflow-y-auto'>
-                        {topic?.follow.map((it)=>
+                        {topic?.follow?.map((it)=>
                             <li className={it.id===selr?.id?'bg-blue-400 px-2 py-1':'px-2 py-1 hover:bg-blue-300'}
                                 key={it.id} onClick={()=>setSelr(it)}>
                                 {it.nickname}

@@ -7,8 +7,9 @@ import TopicMen from "./topicMen"
 
 type Props = {
   topic:any,
+  groups:any,
 }
-export default function chatBox({topic}: Props) {
+export default function chatBox({topic,groups}: Props) {
   const {user, setUser} = useUser()
   const inRef = useRef<any>(null)
   const [status, setStatus] = useState<any>({conn:false, video:false, audio:false, ready:false})
@@ -52,7 +53,8 @@ export default function chatBox({topic}: Props) {
     return true
   }
 
-  function sendMessage() {
+  function sendMessage(e:any) {
+    e.preventDefault()
     if(message === "" && !status.conn) return
     const id = Date.now()
     channel.send({type: 'broadcast',event: topic.id, payload: {id:id, author:user.id, msg:message,}})
@@ -82,7 +84,7 @@ export default function chatBox({topic}: Props) {
           </ul>
         </div>
       </div>
-      <TopicMen show={bmb} topic={topic} close={()=>setBmb(false)}/>
+      <TopicMen show={bmb} topic={topic} groups={groups} close={()=>setBmb(false)}/>
       <button className="h-full pl-4" onClick={logout}>
         <Power css="w-5 h-5 hover:text-blue-600"/>
       </button>
@@ -95,13 +97,17 @@ export default function chatBox({topic}: Props) {
       </div>
       )}
     </div>
-    <div className="flex flex-col">
+    <form className="flex flex-col" onSubmit={sendMessage}>
       <div className="w-full px-3">        
-        <textarea className="w-full border border-blue-600 grow rounded p-2 " 
+        {/* <textarea className="w-full border border-blue-600 grow rounded p-2 " 
           ref={inRef} 
           value={message} 
           onChange={(e:any)=>setMessage(e.target.value)}>
-        </textarea>
+        </textarea> */}
+        <input type="text" className="w-full border border-blue-600 grow rounded p-2 outline-none"
+          ref={inRef} 
+          value={message} 
+          onChange={(e:any)=>setMessage(e.target.value)}/>
       </div>
       <div className="flex justify-between gap-3 w-full p-3 relative">
         <div className="flex gap-3">
@@ -119,13 +125,13 @@ export default function chatBox({topic}: Props) {
           <button className="btn" onClick={()=>setEmj(!emj)}>
             <Face css={"w-5 h-5 text-white"} />
           </button>
-          <button className={status.conn?"btn":"btn-disabled"} onClick={sendMessage}>
+          <button type="submit" className={status.conn?"btn":"btn-disabled"}>
             <Send css={"w-5 h-5 text-white -rotate-45"}/>
           </button>          
           {emj && <Emojis />}
           {/* <Emoji name="270b" css="" /> */}
         </div>
       </div>
-    </div>
+    </form>
   </div>
 )}

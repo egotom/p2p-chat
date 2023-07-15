@@ -17,12 +17,17 @@ export default function App() {
     useLayoutEffect(() => {
         setColl(refWdith.current?.offsetWidth<660)
         window.addEventListener('resize', ()=>{setColl(refWdith.current?.offsetWidth<660)})
-
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
-            setUser(res.data.user)
+            const me = res.data.user
+            setUser(me)
+            subscribeFriend(me.id,(f:any)=>{
+                setFrd(f)
+                setUser({...me, friends:f.friends}) 
+            })
+            subscribeTopic(me.id, setGps)
+            // subscribeMsg(user.id, (payload) => {console.log(payload)})
         })
-
     }, [])
 
     function createTopic(e:any, n:string){
@@ -42,27 +47,12 @@ export default function App() {
         })
     }
 
-    useEffect(()=>{
-        if(!user) return
-        const channel = subscribeFriend(user.id,(f:any)=>{
-            setFrd(f)
-            setUser({...user, friends:f.friends}) 
-        })
-        const subChannel = subscribeTopic(user.id, setGps)
-        // subscribeMsg(user.id, (payload) => {console.log(payload)})
-
-        return()=>{
-            supabase.removeChannel(channel)
-            supabase.removeChannel(subChannel)
-        }
-    },[user])
-
     return (
     <div className="flex justify-between" ref={refWdith}>
         <ModalBox isShow={!user?.id}>
             <Login />
         </ModalBox>
         <Contacts isColl={coll} friend={frd} groups={groups} addTopic={createTopic} selected={setTpc}/>
-        <ChatBox topic={topic}/>
+        <ChatBox topic={topic} groups={groups}/>
     </div>)
 }
