@@ -12,7 +12,7 @@ type Props = {
   coll:boolean,
 }
 
-export default function chatBox({topic,groups,coll}: Props) {
+export default function chatBox({topic, groups, coll}: Props) {
   const {user, setUser} = useUser()
   const inRef = useRef<any>(null)
   const [status, setStatus] = useState<any>({conn:false, video:false, audio:false, ready:false})
@@ -46,11 +46,21 @@ export default function chatBox({topic,groups,coll}: Props) {
   },[topic])
 
   async function dismissTopic(){
-    const {error} = await supabase.from('subscribe').delete().eq('topic', user.id)
+    const {error} = await supabase.from('subscribe').delete().eq('topic', topic.id)
     if(error) return false 
-    const {error:e2} = await supabase.from('topic').delete().eq('id',user.id)
+    const {error:e2} = await supabase.from('topic').delete().eq('id',topic.id)
     if(e2) return false 
     return true
+  }
+
+  function quitTopic(){
+    supabase.from('subscribe').delete().eq('follow', user.id)
+    .then(({error}:any)=>{
+      if(error){
+        return false 
+      }
+      setChl(null)
+    })
   }
 
   function sendMessage(e:any) {
@@ -83,8 +93,11 @@ export default function chatBox({topic,groups,coll}: Props) {
         <div className="dot2 text-green-700">...</div>
         <div className={menu?"menu":"hidden"}>
           <ul className="">
-            {topic?.owner && <li className="item border-b" onClick={dismissTopic}>
+            {topic?.owner ? <li className="item border-b" onClick={dismissTopic}>
               解散该群
+            </li>:
+            <li className="item border-b" onClick={quitTopic}>
+              退出该群
             </li>}
             <li className="item" onClick={()=>setBmb(!bmb)}>
               管理成员
