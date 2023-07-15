@@ -56,7 +56,6 @@ export default function chatBox({topic,groups}: Props) {
   function sendMessage(e:any) {
     e.preventDefault()
     if(message.trim().length <1 || !status.conn) return
-    console.log(message,'dddddddddddddddddddddddd',message.trim().length)
     const id = Date.now()
     channel.send({type: 'broadcast',event: topic.id, payload: {id:id, author:user.id, msg:message,}})
     setMessage("")
@@ -131,12 +130,10 @@ export default function chatBox({topic,groups}: Props) {
           </button>    
               
           {emj && 
-            <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-96 h-96 p-3 ">
+            <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-96 p-2">
               <Emojis />
             </div>  
           }
-          
-          {/* <Emoji name="270b" css="" /> */}
         </div>
       </div>
     </form>
