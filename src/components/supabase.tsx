@@ -6,7 +6,7 @@ const supabase = createClient(url, key)
 
 async function getFriend(id:string){
     const rts:any =[], nfrd:any=[]
-    const{data,error} = await supabase.from('friends')
+    const {data,error}:any = await supabase.from('friends')
         .select(`id,p:profiles!friends_user_fkey(id,email,nickname,avatar,sdp,ice), p2:profiles!friends_user2_fkey(id,email,nickname,avatar,sdp,ice) , user_g, user2_g, stats`)
         .or(`user.eq.${id}, user2.eq.${id}`)
             
@@ -32,11 +32,11 @@ async function getFriend(id:string){
 
 async function getTopic(id:string){
     const rts:any =[]
-    const{data:topics,error} = await supabase.from('subscribe').select('topic(id, name), owner').eq('follow', id)
+    const{data:topics,error}:any = await supabase.from('subscribe').select('topic(id, name), owner').eq('follow', id)
     if(error)   return rts
     
     for(const t of topics){
-        const{data:follows, error:error2} = await supabase.from('subscribe').select('follow(id, nickname, email)').eq('topic',t.topic.id)
+        const{data:follows, error:error2}:any = await supabase.from('subscribe').select('follow(id, nickname, email)').eq('topic',t.topic.id)
         if(error2)   return rts
         const tfs=[]
         for(const d of follows){
