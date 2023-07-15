@@ -1,7 +1,7 @@
 import { useUser } from './userCtx'
 import { useEffect,useState } from 'react'
 import Modal from './modalBox'
-import { X, DoubleLeft, DoubRight } from '../assets/icons'
+import { X, DoubleLeft, DoubRight } from '@/assets/icons'
 import { supabase } from './supabase'
 
 type Props = {

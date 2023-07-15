@@ -1,8 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js'
-import 'dotenv'
-const url = import.meta.env.VITE_SUPABASE_URL
-const key = import.meta.env.VITE_SUPABASE_KEY
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+const key = process.env.NEXT_PUBLIC_SUPABASE_KEY as string
 const supabase = createClient(url, key)
 
 async function getFriend(id:string){
@@ -53,25 +52,25 @@ async function getTopic(id:string){
 function subscribeFriend(id:string , callback:Function){
     const channel = supabase.channel('new-friend-channel')
         .on('postgres_changes', { event: 'insert', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
-            (payload) => {
+            (payload:any) => {
                 console.log('Change received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'update', schema: 'public', table: 'friends', filter: `user=eq.${id}` },
-            (payload) => {
+            (payload:any) => {
                 console.log('Change received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'delete', schema: 'public', table: 'friends', filter: `user=eq.${id}` },
-            (payload) => {
+            (payload:any) => {
                 console.log('Change received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
         )
         .on('postgres_changes', { event: 'update', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
-            (payload) => {
+            (payload:any) => {
                 console.log('Change received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
@@ -83,12 +82,12 @@ function subscribeFriend(id:string , callback:Function){
 function subscribeTopic(id:string , callback:Function){
     const subChannel = supabase.channel('new-subscribe')
         .on('postgres_changes', { event: 'insert', schema: 'public', table: 'subscribe' },
-            (payload) => {
+            (payload:any) => {
                 console.log('subscribe insert received!',JSON.stringify(payload.new))
                 getTopic(id).then(res=>{callback(res)})
             }
         ).on('postgres_changes', { event: 'delete', schema: 'public', table: 'subscribe' },
-            (payload) => {
+            (payload:any) => {
                 console.log('subscribe delete received!',JSON.stringify(payload.new))
                 getTopic(id).then(res=>{callback(res)})
             }
@@ -101,12 +100,12 @@ function subscribeTopic(id:string , callback:Function){
 function subscribeMsg(id:string , onReceive:Function){
     const channel = supabase.channel('chatRoom')
     supabase.from('subscribe').select('topic(id)').eq('follow', id)
-    .then(({data,error})=>{
+    .then(({data,error}:any)=>{
         if(error)   return null
         for(const s of data){
             channel.on('broadcast', { event: s.topic.id }, onReceive )
         }
-        channel.subscribe((status) => {
+        channel.subscribe((status:string) => {
             if (status === 'SUBSCRIBED') {
                 console.log("Room msg SUBSCRIBED")
             }

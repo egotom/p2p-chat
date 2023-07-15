@@ -1,7 +1,7 @@
-import {supabase} from './components/supabase'
+import {supabase} from '@/components/supabase'
 import { useState } from 'react'
-import {Spin} from './assets/icons'
-import {useUser} from './components/userCtx'
+import {Spin} from '@/assets/icons'
+import {useUser} from '@/components/userCtx'
 
 type Props = {}
 
@@ -66,11 +66,12 @@ export default function Login({}:Props){
             options: {
                 data: {nickname: rg.nickname.trim()}
             }
-        }).then((res:any)=>{
-            console.log(res)
-            setNt({rsuccess:"注册成功！请登录邮箱，激活账号。"})
+        }).then(({error}:any)=>{
+            if(!error)
+                setNt({rsuccess:"注册成功！请登录邮箱，激活账号。"})
         }).catch((e:any)=>{
             console.log(e)
+                setNt({rsuccess:"网络错误，请稍后再试。"})
         }).finally(()=>{
             setRg({email:'', password:'', repass:'', nickname:'', loadding:false})
         })
