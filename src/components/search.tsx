@@ -66,8 +66,9 @@ export default function SearchBar({friends}: Props){
     }
     return (<>
     <form className="flex justify-between bg-white p-1 rounded-sm my-2">
-        <input type="text" className='grow outline-none' value={kw} onChange={(e:any)=>setKw(e.target.value)}/>
-        <button onClick={doSearch}><Search css={"w-5 h-5"}/></button> 
+        <input type="text" className='grow outline-none' value={kw} placeholder='搜索好友'
+            onChange={(e:any)=>setKw(e.target.value)}/>
+        <button onClick={doSearch}><Search css={"w-5 h-5 text-green-700"}/></button> 
     </form>
     {friends?.length>0 && <div className="text-blue-600">有新的好友邀请：</div> }
     {friends?.map((it:any)=>

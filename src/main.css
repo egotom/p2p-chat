@@ -7,13 +7,19 @@ body{
 }
 
 .btn{
-    @apply border border-blue-600 px-4 py-1.5 rounded bg-blue-600 text-white;
+    @apply border border-blue-600 px-4 py-1 rounded bg-blue-600 text-white;
 }
 
 .btn-disabled{
-    @apply border border-gray-400 px-4 py-1.5 rounded bg-gray-400 text-white;
+    @apply border border-gray-400 px-4 py-1 rounded bg-gray-400 text-white;
 }
 
+.menu{
+    @apply absolute top-[31px] flex flex-col w-40 bg-gray-300 border border-gray-400 border-t-0;
+}
+.item{
+    @apply hover:text-blue-600 hover:bg-[#bbb] px-2 py-1.5;
+}
 .msg{
     @apply mr-10 self-start px-2 py-1 bg-white rounded;
 }
@@ -23,11 +29,11 @@ body{
 }
 
 .tab{
-    @apply border border-gray-400 px-1 cursor-pointer;
+    @apply border border-gray-400 px-1 cursor-pointer hover:text-blue-600;
 }
 
 .tab-a{
-    @apply border border-b-0 border-gray-400 px-1 cursor-pointer;
+    @apply border border-b-0 border-gray-400 px-1 cursor-pointer text-blue-700 ;
 }
 
 
@@ -43,4 +49,12 @@ body{
 @keyframes dot2 {
     33% {text-indent: 0;}
     66% {text-indent: -2ch;}
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-top: 10px solid green;
+    border-right: 6px solid rgb(188, 184, 184);
+    border-left: 6px solid rgb(188, 184, 184);
 }

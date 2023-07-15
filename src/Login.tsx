@@ -113,7 +113,7 @@ return (
         </div>
         <div className="flex itemts-center justify-center gap-3 my-2">
             <button className='btn' onClick={signin}>
-                {lg.loadding?<Spin css="w-7 h-7 animate-spin"/>:"登录"}
+                {lg.loadding?<Spin css="w-5 h-5 animate-spin"/>:"登录"}
             </button>
         </div>
     </div>
@@ -166,7 +166,7 @@ return (
             </div>
         </div>
         <button className='btn'onClick={signUp}>
-            {rg.loadding?<Spin css="w-7 h-7 animate-spin"/>:"注册"}
+            {rg.loadding?<Spin css="w-5 h-5 animate-spin"/>:"注册"}
         </button>
     </div>
 </div>    

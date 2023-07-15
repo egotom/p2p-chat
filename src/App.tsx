@@ -3,15 +3,16 @@ import ChatBox from './components/chatBox'
 import Contacts from './components/contacts'
 import ModalBox from './components/modalBox'
 import Login from './Login'
-import { supabase } from './components/supabase'
+import { supabase,  subscribeTopic, subscribeFriend ,subscribeMsg} from './components/supabase'
 import { useUser } from './components/userCtx'
-import fetchFrd from './components/getFriend'
 
 export default function App() {
     const {user, setUser} = useUser()
-    const [coll, setColl] = useState<boolean>(false);
-    const [frd, setFrd] = useState<any>(null);
-    const refWdith = useRef(null);
+    const [coll, setColl] = useState<boolean>(false)
+    const [frd, setFrd] = useState<any>(null)
+    const [groups, setGps] =useState<any>([])
+    const [topic, setTpc] = useState<any>()
+    const refWdith = useRef(null)
 
     useLayoutEffect(() => {
         setColl(refWdith.current?.offsetWidth<660)
@@ -24,45 +25,36 @@ export default function App() {
 
     }, [])
 
+    function createTopic(e:any, n:string){
+        e.preventDefault()
+        const name = n.trim()
+        if(name.length<1) {
+            return
+        }
+        supabase.from('topic').insert({name:name}).select().single()
+        .then(res=>{
+            if(res.error)   return
+            supabase.from('subscribe').insert({topic:res.data.id, follow:user.id, owner:true}).then(res2=>{
+                if(res2.error){
+                    return
+                }
+            })            
+        })
+    }
+
     useEffect(()=>{
         if(!user) return
-        supabase.channel('new-friend-channel')
-            .on('postgres_changes',{ event: 'insert', schema: 'public', table: 'friends', filter: `user2=eq.${user.id}` },
-                (payload) => {
-                    console.log('Change received!',JSON.stringify(payload.new))
-                    fetchFrd(user.id).then((res:any)=>{
-                        setFrd(res)
-                    })
-                }
-            )
-            .on('postgres_changes',{ event: 'update', schema: 'public', table: 'friends', filter: `user=eq.${user.id}` },
-                (payload) => {
-                    console.log('Change received!',JSON.stringify(payload.new))
-                    fetchFrd(user.id).then((res:any)=>{
-                        setFrd(res)
-                    })
-                }
-            )
-            .on('postgres_changes',{ event: 'delete', schema: 'public', table: 'friends', filter: `user=eq.${user.id}` },
-                (payload) => {
-                    console.log('Change received!',JSON.stringify(payload.new))
-                    fetchFrd(user.id).then((res:any)=>{
-                        setFrd(res)
-                    })
-                }
-            )
-            .on('postgres_changes',{ event: 'update', schema: 'public', table: 'friends', filter: `user2=eq.${user.id}` },
-                (payload) => {
-                    console.log('Change received!',JSON.stringify(payload.new))
-                    fetchFrd(user.id).then((res:any)=>{
-                        setFrd(res)
-                    })
-                }
-            ).subscribe()
-
-        fetchFrd(user.id).then((res:any)=>{
-            setFrd(res)
+        const channel = subscribeFriend(user.id,(f:any)=>{
+            setFrd(f)
+            setUser({...user, friends:f.friends}) 
         })
+        const subChannel = subscribeTopic(user.id, setGps)
+        // subscribeMsg(user.id, (payload) => {console.log(payload)})
+
+        return()=>{
+            supabase.removeChannel(channel)
+            supabase.removeChannel(subChannel)
+        }
     },[user])
 
     return (
@@ -70,7 +62,7 @@ export default function App() {
         <ModalBox isShow={!user?.id}>
             <Login />
         </ModalBox>
-        <Contacts isColl={coll} friend={frd}/>
-        <ChatBox />
+        <Contacts isColl={coll} friend={frd} groups={groups} addTopic={createTopic} selected={setTpc}/>
+        <ChatBox topic={topic}/>
     </div>)
 }
