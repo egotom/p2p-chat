@@ -9,11 +9,11 @@ export function Emojis() {
 return (
     <div className="flex items-center justify-start p-3 gap-3" style={{flexWrap: "wrap"}}>
         {emjs.map((it:any, id:number)=>
-        <button key={id}>
+        <div key={id} className="cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" className="w-7 h-7" >
                 {it[Object.keys(it)[0]]}
             </svg>
-        </button>
+        </div>
         )}
     </div>
 )}

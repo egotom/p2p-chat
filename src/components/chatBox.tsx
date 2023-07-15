@@ -55,7 +55,8 @@ export default function chatBox({topic,groups}: Props) {
 
   function sendMessage(e:any) {
     e.preventDefault()
-    if(message === "" && !status.conn) return
+    if(message.trim().length <1 || !status.conn) return
+    console.log(message,'dddddddddddddddddddddddd',message.trim().length)
     const id = Date.now()
     channel.send({type: 'broadcast',event: topic.id, payload: {id:id, author:user.id, msg:message,}})
     setMessage("")

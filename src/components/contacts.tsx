@@ -62,6 +62,11 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
         }
     },[user, friend])
     
+    function onSelect(t:any){
+        selected(t)
+        if(isColl)
+            setColl(isColl)
+    }
 
     return (<>
     {coll && 
@@ -121,7 +126,7 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
             </form>
             {groups.map((it:any)=>
             <div className="flex items-center cursor-pointer p-1 bg-gray-200 rounded" key={it.id} 
-                onClick={()=>selected(it)}>
+                onClick={()=>onSelect(it)}>
                 <Mask css="w-9 h-9 rounded bg-purple-400"/>
                 <div className="ml-3">
                     <div className="text-sm text-blue-700 ">{it.name}</div>
