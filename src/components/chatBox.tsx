@@ -4,12 +4,15 @@ import {Emojis}  from '../assets/emoji'
 import {supabase} from './supabase'
 import {useUser} from './userCtx'
 import TopicMen from "./topicMen"
+import Modal from './modalBox'
 
 type Props = {
   topic:any,
   groups:any,
+  coll:boolean,
 }
-export default function chatBox({topic,groups}: Props) {
+
+export default function chatBox({topic,groups,coll}: Props) {
   const {user, setUser} = useUser()
   const inRef = useRef<any>(null)
   const [status, setStatus] = useState<any>({conn:false, video:false, audio:false, ready:false})
@@ -22,13 +25,9 @@ export default function chatBox({topic,groups}: Props) {
 
   useEffect(()=>{
     if(!topic?.id) return
-    const ch = supabase.channel('chatRoom', {
-      config: {
-        broadcast: {self: true},
-      },
-    })
-    .on('broadcast', { event: topic.id }, ({payload}) => {
-        setMsg((m:any)=>[...m, {id:Date.now(),author:payload.author, msg:payload.msg}])
+    const ch = supabase.channel('chatRoom', {config: {broadcast: {self: true}}})
+    .on('broadcast', { event: topic.id }, ({payload}:any) => {
+        setMsg((m:any)=>[...m, {id:Date.now() ,email:payload.email, msg:payload.msg, name:payload.name}])
     })
     .subscribe((s) => {
         if (s === 'SUBSCRIBED') {
@@ -56,8 +55,16 @@ export default function chatBox({topic,groups}: Props) {
   function sendMessage(e:any) {
     e.preventDefault()
     if(message.trim().length <1 || !status.conn) return
-    const id = Date.now()
-    channel.send({type: 'broadcast',event: topic.id, payload: {id:id, author:user.id, msg:message,}})
+    
+    channel.send({
+      type: 'broadcast',
+      event: topic.id, 
+      payload: {
+        id:Date.now(),
+        email:user.email,
+        name:user.nickname,
+        msg:message
+      }})
     setMessage("")
     inRef.current.focus()
   }
@@ -84,7 +91,9 @@ export default function chatBox({topic,groups}: Props) {
           </ul>
         </div>
       </div>
-      <TopicMen show={bmb} topic={topic} groups={groups} close={()=>setBmb(false)}/>
+      <Modal isShow={bmb} coll={coll}>
+        <TopicMen topic={topic} groups={groups} close={()=>setBmb(false)}/>
+      </Modal>
       <button className="h-full pl-4" onClick={logout}>
         <Power css="w-5 h-5 hover:text-blue-600"/>
       </button>
@@ -92,8 +101,9 @@ export default function chatBox({topic,groups}: Props) {
     
     <div className="w-full h-full rounded flex flex-col gap-3 p-3 grow overflow-y-auto">
       {msg.map((it:any)=>
-      <div className={it.author===user.id?"msg-me":"msg" } key={it.id}>
-        {it.msg}
+      <div className={it.email===user.email?"msg-me":"msg" } key={it.id}>
+        {it.email===user.email &&<div>{it.name}</div>}
+        <div dangerouslySetInnerHTML={{__html:it.msg}}></div>
       </div>
       )}
     </div>
@@ -130,7 +140,7 @@ export default function chatBox({topic,groups}: Props) {
           </button>    
               
           {emj && 
-            <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-96 p-2">
+            <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-80 p-2">
               <Emojis />
             </div>  
           }

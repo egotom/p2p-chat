@@ -3,20 +3,18 @@ import { useState, useEffect } from 'react'
 import {Spin} from '@/assets/icons'
 import {useUser} from '@/components/userCtx'
 
-type Props = {}
+type Props = {
+    coll:boolean,
+}
 
-export default function Login({}:Props){
+export default function Login({coll}:Props){
     const {setUser,user} = useUser()
     const [lg, setLg] = useState<any>({email:'', password:'', hidden:false, loadding:false })
     const [rg, setRg] = useState<any>({email:'', password:'', repass:'', nickname:'', loadding:false})
     const [nt, setNt] = useState<any>({})
-    const [coll, setColl] = useState<boolean>(false)
     const [act, setact] = useState<string>('lg')
 
-    useEffect(()=>{
-        if(!user?.coll) return
-        setColl(user.coll)
-    },[user])
+
 
     function signin(){
         const ers:any ={}

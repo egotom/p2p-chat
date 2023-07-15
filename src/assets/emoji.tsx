@@ -7,7 +7,7 @@ const emjs=[{'1f600':<><circle fill="#FFCC4D" cx="18" cy="18" r="18"/><path fill
     
 export function Emojis() {
 return (
-    <div className="flex items-center justify-start" style={{flexWrap: "wrap", gap:"0.87rem"}}>
+    <div className="flex items-center justify-start" style={{flexWrap: "wrap", gap:"1.1rem"}}>
         {emjs.map((it:any, id:number)=>
         <div key={id} className="cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" className="w-7 h-7" >

@@ -15,14 +15,13 @@ export default function App() {
     const [topic, setTpc] = useState<any>()
     const refWdith = useRef(null)
 
-    useEffect(() => {
-        const isColl = refWdith.current?.offsetWidth<660
-        setColl(isColl)
-        setUser({...user, coll:isColl})
-        window.addEventListener('resize', ()=>{setColl(isColl)})
+    useEffect(() => {        
+        window.addEventListener('resize', ()=>{
+            setColl(refWdith.current?.offsetWidth<660)
+        })
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
-            setUser({...res.data.user, coll:isColl})
+            setUser(res.data.user)
         })
     }, [])
 
@@ -55,10 +54,10 @@ export default function App() {
 
     return (
     <div className="flex justify-between" ref={refWdith}>
-        <ModalBox isShow={!user?.id}>
-            <Login />
+        <ModalBox isShow={!user?.id} coll={coll}>
+            <Login coll={coll}/>
         </ModalBox>
         <Contacts isColl={coll} friend={frd} groups={groups} addTopic={createTopic} selected={setTpc}/>
-        <ChatBox topic={topic} groups={groups}/>
+        <ChatBox topic={topic} groups={groups} coll={coll}/>
     </div>)
 }
