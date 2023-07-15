@@ -30,8 +30,8 @@ export default function chatBox({topic,groups}: Props) {
     .on('broadcast', { event: topic.id }, ({payload}) => {
         setMsg((m:any)=>[...m, {id:Date.now(),author:payload.author, msg:payload.msg}])
     })
-    .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
+    .subscribe((s) => {
+        if (s === 'SUBSCRIBED') {
             // console.log("SUBSCRIBED on room ", topic.id)
             setChl(ch)
             setStatus({...status, conn:true})
