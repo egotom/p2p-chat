@@ -27,11 +27,11 @@ body{
     @apply hover:text-blue-600 hover:bg-[#bbb] px-2 py-1.5;
 }
 .msg{
-    @apply mr-10 self-start px-2 py-1 bg-white rounded;
+    @apply mr-10 self-start px-2 py-1 bg-white rounded my-1;
 }
 
 .msg-me{
-    @apply self-end px-2 py-1 bg-green-500 rounded ml-10;
+    @apply self-end px-2 py-1 bg-green-500 rounded ml-10 my-1;
 }
 
 .tab{

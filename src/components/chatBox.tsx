@@ -27,6 +27,7 @@ export default function chatBox({topic,groups,coll}: Props) {
     if(!topic?.id) return
     const ch = supabase.channel('chatRoom', {config: {broadcast: {self: true}}})
     .on('broadcast', { event: topic.id }, ({payload}:any) => {
+        console.log(JSON.stringify(payload,null,2))
         setMsg((m:any)=>[...m, {id:Date.now() ,email:payload.email, msg:payload.msg, name:payload.name}])
     })
     .subscribe((s) => {
@@ -55,7 +56,7 @@ export default function chatBox({topic,groups,coll}: Props) {
   function sendMessage(e:any) {
     e.preventDefault()
     if(message.trim().length <1 || !status.conn) return
-    
+
     channel.send({
       type: 'broadcast',
       event: topic.id, 
@@ -99,12 +100,18 @@ export default function chatBox({topic,groups,coll}: Props) {
       </button>
     </div>
     
-    <div className="w-full h-full rounded flex flex-col gap-3 p-3 grow overflow-y-auto">
-      {msg.map((it:any)=>
-      <div className={it.email===user.email?"msg-me":"msg" } key={it.id}>
-        {it.email===user.email &&<div>{it.name}</div>}
-        <div dangerouslySetInnerHTML={{__html:it.msg}}></div>
-      </div>
+    <div className="w-full h-full rounded p-3 overflow-y-auto">
+      {msg.map((it:any)=>       
+        <div key={it.id} className="flex flex-col grow">
+          {it.email!=user.email &&
+            <div title={it.email} className="text-sm text-blue-600">
+              {it.name || it.email.split('@')[0]}
+            </div>
+          }
+          <div className={it.email===user.email?"msg-me":"msg" }  
+            dangerouslySetInnerHTML={{__html:it.msg}}>
+          </div>
+        </div>    
       )}
     </div>
     <form className="flex flex-col" onSubmit={sendMessage}>
