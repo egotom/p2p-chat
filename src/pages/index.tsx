@@ -15,22 +15,22 @@ export default function App() {
     const [topic, setTpc] = useState<any>()
     const refWdith = useRef(null)
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const isColl = refWdith.current?.offsetWidth<660
         setColl(isColl)
+        setUser({...user, coll:isColl})
         window.addEventListener('resize', ()=>{setColl(isColl)})
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
             setUser({...res.data.user, coll:isColl})
         })
-        setUser({...user, coll:isColl})
     }, [])
 
     useEffect(()=>{
         if(!user || !user.id) return
         subscribeFriend(user.id,(f:any)=>{
             setFrd(f)
-            setUser({...user, friends:f.friends, coll:coll}) 
+            setUser({...user, friends:f.friends}) 
         })
         subscribeTopic(user.id, setGps)
         // subscribeMsg(user.id, (payload) => {console.log(payload)})

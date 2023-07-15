@@ -94,9 +94,9 @@ export default function Login({}:Props){
     }
 return (
 <div className='h-full w-full flex justify-around items-center rounded'>
-    <div className={act==='lg'?coll?'w-full h-full flex flex-col items-center justify-center':'basis-1/2 h-full flex flex-col rounded-l':'hidden'} 
+    <div className={coll?(act==='lg'?'w-full h-full flex flex-col items-center':'hidden'):'basis-1/2 h-full flex flex-col rounded-l'} 
         style={{backgroundImage: "url(/bg-register.jpg)", backgroundSize:"cover"}}>
-        <div className={coll?"text-lg self-center text-white":"my-6 text-lg self-end px-3 text-white"}>登录</div>
+        <div className={coll?"text-lg self-center text-white mt-12":"my-6 text-lg self-end px-3 text-white"}>登录</div>
         <div className="text-red-600 text-sm h-8 self-center w-64 mb-3">{nt.lres}</div>
         <div className="flex items-center gap-3 my-2">
             <div className='text-white text-sm w-10 ml-10'>账号</div>
@@ -128,9 +128,9 @@ return (
             {coll && <div className="text-white cursor-pointer" onClick={()=>setact('rg')}>注册新用户</div>}
         </div>
     </div>
-    <div className={act==='rg'?coll?'w-full h-full flex flex-col items-center justify-center':'basis-1/2 h-full flex flex-col items-center':'hidden'}
-        style={{backgroundImage: "url(/bg-register.jpg)", backgroundSize:"cover"}}>
-        <div className={coll?"text-lg self-center text-white":"my-6 text-lg self-start px-3 "}>注册新用户</div>
+    <div className={coll?(act==='rg'?'w-full h-full flex flex-col items-center ':'hidden'):'basis-1/2 h-full flex flex-col items-center'}
+        style={coll?{backgroundImage: "url(/bg-register.jpg)", backgroundSize:"cover"}:{}}>
+        <div className={coll?"text-lg self-center text-white mt-12":"my-6 text-lg self-start px-3 "}>注册新用户</div>
         <div className="flex flex-col">
             <div className="text-red-700 text-sm h-8">{nt.rres}</div>
             <div className="flex items-center">
