@@ -5,7 +5,7 @@ const key = process.env.NEXT_PUBLIC_SUPABASE_KEY as string
 const supabase = createClient(url, key)
 
 async function getFriend(id:string){
-    const rts =[], nfrd=[]
+    const rts:any =[], nfrd:any=[]
     const{data,error} = await supabase.from('friends')
         .select(`id,p:profiles!friends_user_fkey(id,email,nickname,avatar,sdp,ice), p2:profiles!friends_user2_fkey(id,email,nickname,avatar,sdp,ice) , user_g, user2_g, stats`)
         .or(`user.eq.${id}, user2.eq.${id}`)
@@ -31,7 +31,7 @@ async function getFriend(id:string){
 
 
 async function getTopic(id:string){
-    const rts =[]
+    const rts:any =[]
     const{data:topics,error} = await supabase.from('subscribe').select('topic(id, name), owner').eq('follow', id)
     if(error)   return rts
     
