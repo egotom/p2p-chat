@@ -52,7 +52,7 @@ async function getTopic(id:string){
 function subscribeFriend(id:string , callback:Function){
     const channel = supabase.channel('new-friend-channel')
         .on('postgres_changes', { event: 'insert', schema: 'public', table: 'friends', filter: `user2=eq.${id}` },
-            (payload:any) => {
+            (payload) => {
                 console.log('Change received!',JSON.stringify(payload.new))
                 getFriend(id).then((res:any)=>{callback(res)})
             }
