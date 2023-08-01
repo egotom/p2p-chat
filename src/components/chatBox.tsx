@@ -1,6 +1,6 @@
 import { useState,useEffect,useRef } from "react";
 import { Attachment,Send, Video, DVideo, Sound, DSound, Face, Power} from '../assets/icons';
-import {Emojis,j}  from '../assets/emoji'
+import {Emojis,insetEmoji,Emoji}  from '../assets/emoji'
 import {supabase} from './supabase'
 import {useUser} from './userCtx'
 import TopicMen from "./topicMen"
@@ -27,8 +27,13 @@ export default function chatBox({topic, groups, coll}: Props) {
     if(!topic?.id) return
     const ch = supabase.channel('chatRoom', {config: {broadcast: {self: true}}})
     .on('broadcast', { event: topic.id }, ({payload}:any) => {
-        console.log(JSON.stringify(payload,null,2))
-        setMsg((m:any)=>[...m, {id:Date.now() ,email:payload.email, msg:payload.msg, name:payload.name}])
+        console.log(JSON.stringify(insetEmoji(payload.msg),null,2))
+        setMsg((m:any)=>[...m, {
+          id:Date.now() ,
+          email:payload.email, 
+          msg:insetEmoji(payload.msg), 
+          name:payload.name}
+        ])
     })
     .subscribe((s) => {
         if (s === 'SUBSCRIBED') {
@@ -50,6 +55,8 @@ export default function chatBox({topic, groups, coll}: Props) {
     if(error) return false 
     const {error:e2} = await supabase.from('topic').delete().eq('id',topic.id)
     if(e2) return false 
+    setChl(null)
+    setStatus({...status, conn:false})
     return true
   }
 
@@ -60,9 +67,10 @@ export default function chatBox({topic, groups, coll}: Props) {
         return false 
       }
       setChl(null)
+      setStatus({...status, conn:false})
     })
   }
-
+    
   function sendMessage(e:any) {
     e.preventDefault()
     if(message.trim().length <1 || !status.conn) return
@@ -75,7 +83,7 @@ export default function chatBox({topic, groups, coll}: Props) {
         email:user.email,
         name:user.nickname,
         msg:message
-      }})
+    }})
     setMessage("")
     inRef.current.focus()
   }
@@ -84,6 +92,12 @@ export default function chatBox({topic, groups, coll}: Props) {
     await supabase.auth.signOut()
     setUser(null)
   }
+
+  function istEmj(id:string){
+    setMessage(message+` [${id}] `)
+    setEmj(!emj)
+  }
+
   return (
   <div className="flex flex-col justify-between px-3 h-screen w-full">
     <div className="flex justify-between border-b border-gray-400 w-full px-3 py-1.5">
@@ -121,19 +135,14 @@ export default function chatBox({topic, groups, coll}: Props) {
               {it.name || it.email.split('@')[0]}
             </div>
           }
-          <div className={it.email===user.email?"msg-me":"msg" }  
-            dangerouslySetInnerHTML={{__html:it.msg}}>
+          <div className={it.email===user.email?"msg-me":"msg" }>
+            {it.msg}
           </div>
         </div>    
       )}
     </div>
     <form className="flex flex-col" onSubmit={sendMessage}>
-      <div className="w-full px-3">        
-        {/* <textarea className="w-full border border-blue-600 grow rounded p-2 " 
-          ref={inRef} 
-          value={message} 
-          onChange={(e:any)=>setMessage(e.target.value)}>
-        </textarea> */}
+      <div className="w-full px-3">
         <input type="text" className="w-full border border-blue-600 grow rounded p-2 outline-none"
           ref={inRef} 
           value={message} 
@@ -152,7 +161,7 @@ export default function chatBox({topic, groups, coll}: Props) {
           <button className={status.conn?"btn":"btn-disabled"}><Attachment css={"w-5 h-5 text-white"}/></button>
         </div>
         <div className="flex gap-3 ">
-          <button className="btn" onClick={()=>setEmj(!emj)}>
+          <button className="btn" onClick={(e)=>{e.preventDefault(); setEmj(!emj)}}>
             <Face css={"w-5 h-5 text-white"} />
           </button>
           <button type="submit" className={status.conn?"btn":"btn-disabled"}>
@@ -161,7 +170,7 @@ export default function chatBox({topic, groups, coll}: Props) {
               
           {emj && 
             <div className="absolute bottom-14 right-3 border border-gray-400 bg-white rounded shadow w-80 p-2">
-              <Emojis />
+              <Emojis istEmj={istEmj}/>
             </div>  
           }
         </div>

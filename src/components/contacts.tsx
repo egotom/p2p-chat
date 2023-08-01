@@ -70,14 +70,14 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
 
     return (<>
     {coll && 
-        <div className="p-3 absolute">
-            <button className="self-end pt-1" onClick={()=>setColl(false)}>
+        <div className="absolute p-3">
+            <button className="self-end pb-1" onClick={()=>setColl(false)}>
                 <DoubRight css="w-5 h-5 hover:text-blue-600" />
             </button>
         </div>
     }
     <div className={coll?"hidden":isColl?"coll-is":"coll"}>
-        <div className="flex justify-between mb-6">
+        <div className="flex justify-between">
             <button className='self-end border-b border-gray-400' onClick={()=>setColl(true)}>
                 <DoubleLeft css="w-5 h-5 hover:text-blue-600" />
             </button>
