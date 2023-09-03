@@ -1,3 +1,4 @@
+'use client'
 import {useState, useEffect} from 'react'
 import { DoubleLeft, DoubRight, Man, Woman, Mask, Plus, Check } from '../assets/icons'
 import Preferences from './preferences'
@@ -16,16 +17,13 @@ type Props = {
 export default function Contacts({isColl, friend, groups ,addTopic, selected}: Props) {
     const [coll, setColl] = useState<boolean>(isColl)
     const [friends, setFrds] =useState<any>([])
-    
     const [tab, setTab] = useState<string>('p2p')
     const [gnm, setGnm] = useState<string>('')
     const {user} = useUser()
+    
     useEffect(()=>{
-        setColl(isColl)
-    },[isColl])
-
-    useEffect(()=>{
-        if(!user?.id || !friend) return
+        if(!user?.id || !friend)  return
+        const pc = new RTCPeerConnection()
         const channel = supabase.channel('online-users', {
             config: {
                 presence: {
@@ -33,30 +31,31 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
                 },
             },
         })
-        channel.on('presence', { event: 'join' }, ({ key }) => {
-            // console.log('join', key)
+        channel.on('presence', { event: 'join' }, (payload) => {
+            console.log('join', JSON.stringify(payload,null,2))
             const rts =[]
             for(const f of friend.friends){
-                if(f.id===key)
+                if(f.id===payload.key)
                     f['online']=true
                 rts.push(f)
             }
             setFrds(rts)
-        }).on('presence', { event: 'leave' }, ({ key  }) => {
-            // console.log('leave', key, leftPresences)
+        }).on('presence', { event: 'leave' }, (payload) => {
+            console.log('leave', JSON.stringify(payload,null,2))
             const rts =[]
             for(const f of friend.friends){
-                if(f.id===key)
+                if(f.id===payload.key)
                     f['online']=false
                 rts.push(f)
             }
             setFrds(rts)
         }).subscribe(async (status) => {
             if (status === 'SUBSCRIBED') {
-                await channel.track({ online_at: new Date().toISOString() })
+                const offer = await pc.createOffer()
+                pc.setLocalDescription(offer)
+                await channel.track({ online_at: new Date().toISOString(), offer: offer})
             }
         })
-
         return ()=>{
             supabase.removeChannel(channel)
         }
@@ -96,7 +95,7 @@ export default function Contacts({isColl, friend, groups ,addTopic, selected}: P
             </div> */}
             <SearchBar friends={friend?.newFriends}/>
             {friends?.map((it:any)=>
-            <div className="flex items-center cursor-pointer p-1 bg-gray-200 rounded" key={it.id} >
+            <div className="flex items-center cursor-pointer p-1 bg-gray-200 rounded" key={it.id}>
                 {it.avatar==='woman' && 
                     <Woman css={it.online?"w-9 h-9 rounded bg-red-200":"w-9 h-9 rounded bg-gray-400"} />
                 }

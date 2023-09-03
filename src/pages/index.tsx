@@ -13,12 +13,14 @@ export default function App() {
     const [frd, setFrd] = useState<any>(null)
     const [groups, setGps] =useState<any>([])
     const [topic, setTpc] = useState<any>()
-    const refWdith = useRef(null)
+    const refWdith = useRef<any>(null)
 
-    useEffect(() => {        
+    useEffect(() => {       
+        setColl(refWdith.current?.offsetWidth<660) 
         window.addEventListener('resize', ()=>{
             setColl(refWdith.current?.offsetWidth<660)
         })
+        
         supabase.auth.getUser().then((res:any)=>{
             if(res.error) return
             setUser(res.data.user)
